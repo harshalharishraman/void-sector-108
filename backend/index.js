@@ -7,7 +7,7 @@ require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
 
 const app = express();
 const port = process.env.PORT || 4000;
-const publicPath = path.join(__dirname, "..", "public");
+const publicPath =path.join(__dirname,"../frontend");
 
 const httpServer = http.createServer(app);
 const io = new Server(httpServer);
