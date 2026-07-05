@@ -14,13 +14,12 @@ const io = new Server(httpServer);
 
 app.use(express.static(publicPath));
 
-app.get("/health", (_req, res) => {
-  res.json({ status: "ok" });
-});
-
 io.on("connection", (socket) => {
   console.log(`socket connected: ${socket.id}`);
-  router.create_room(io,socket)
+  
+  socket.on("join-room",(r_id,uname)=>{
+    router.join_room(io,socket,r_id,uname)
+  })
 
   socket.on("disconnect", () => {
     console.log(`socket disconnected: ${socket.id}`);
