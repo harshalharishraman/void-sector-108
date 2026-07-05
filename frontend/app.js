@@ -1,26 +1,75 @@
-const socket= io("http://localhost:4000"); 
-const statusEl = document.getElementById('status');
-const idEl = document.getElementById('socket-id');
-const logEl = document.getElementById('log');
+const socket = io();
 
-function appendLog(message) {
-  logEl.innerHTML += `[${new Date().toLocaleTimeString()}] ${message}<br>`;
-  logEl.scrollTop = logEl.scrollHeight;
-}
+// DOM Element Selectors
+const authScreen = document.getElementById('auth-screen');
+const lobbyScreen = document.getElementById('lobby-screen');
+const roomScreen = document.getElementById('room-screen');
 
-socket.on('connect', () => {
-  statusEl.textContent = 'Connected';
-  statusEl.className = 'connected';
-  idEl.textContent = socket.id;
-  appendLog(`Connected to backend with ID: ${socket.id}`);
-});
+const usernameInput = document.getElementById('username-input');
+const displayName = document.getElementById('display-name');
+const roomInput = document.getElementById('room-input');
+const roomCodeDisplay = document.getElementById('room-code-display');
+const userList = document.getElementById('user-list');
 
-socket.on('disconnect', () => {
-  statusEl.textContent = 'Disconnected';
-  statusEl.className = 'disconnected';
-  idEl.textContent = 'None';
-  appendLog('Disconnected from backend.');
-});
+// --- Event Listeners ---
 
+// Submit Username
+document.getElementById('login-btn').addEventListener('click', () => {
+    const username = usernameInput.value.trim();
+    if (!username) return alert("Please enter a username");
+
+    socket.emit('join-setup', { username });
+    displayName.textContent = username;
     
+    authScreen.classList.add('hidden');
+    lobbyScreen.classList.remove('hidden');
+});
+
+// Create Room Request
+document.getElementById('create-btn').addEventListener('click', () => {
+    socket.emit('create-room');
+});
+
+// Join Room Request
+document.getElementById('join-btn').addEventListener('click', () => {
+    const code = roomInput.value.trim();
+    if (!code) return alert("Please enter a room code");
+    socket.emit('join-room', code);
+});
+
+
+// --- Socket Listeners ---
+
+// Handle view transition when room is created or joined successfully
+socket.on('room-created', (code) => {
+    showRoom(code);
+});
+
+socket.on('room-joined', (code) => {
+    showRoom(code);
+});
+
+// Listen for synchronized active users list from backend
+socket.on('room-users', (users) => {
+    userList.innerHTML = '';
+    users.forEach(user => {
+        const li = document.createElement('li');
+        li.textContent = user;
+        userList.appendChild(li);
+    });
+});
+
+// Catch errors sent from backend (e.g., room code invalid)
+socket.on('error-message', (msg) => {
+    alert(msg);
+});
+
+
+// --- UI Helper Functions ---
+
+function showRoom(code) {
+    lobbyScreen.classList.add('hidden');
+    roomScreen.classList.remove('hidden');
+    roomCodeDisplay.textContent = code;
+}
 

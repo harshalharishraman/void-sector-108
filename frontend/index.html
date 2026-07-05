@@ -1,24 +1,36 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frontend</title>
-    <link href="css/style.css" rel="stylesheet">
-    <style>
-    </style>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Socket.io Rooms</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div id="auth-screen" class="box">
+      <h3>Enter Username</h3>
+      <input type="text" id="username-input" placeholder="Your name..." />
+      <button id="login-btn">Next</button>
+    </div>
 
-    <h2>Websocket Connection Status: <span id="status" class="disconnected">Disconnected</span></h2>
-    <p>Your Socket ID: <span id="socket-id">None</span></p>
+    <div id="lobby-screen" class="box hidden">
+      <h3>Welcome, <span id="display-name"></span>!</h3>
+      <button id="create-btn">Create a New Room</button>
+      <hr />
+      <input type="text" id="room-input" placeholder="Enter Room Code" />
+      <button id="join-btn">Join Existing Room</button>
+    </div>
 
-    <h3>Event Log</h3>
-    <div id="log">Connecting to server...</div>
+    <div id="room-screen" class="box hidden">
+      <h2>Room Code: <span id="room-code-display"></span></h2>
+      <h3>Users in this room:</h3>
+      <ul id="user-list"></ul>
+      <button id="leave-btn" onclick="window.location.reload()">
+        Leave Room
+      </button>
+    </div>
 
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-    <script src="app.js"></script>    
- 
+    <script src="app.js"></script>
   </body>
 </html>
-
