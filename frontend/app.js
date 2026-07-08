@@ -41,12 +41,12 @@ document.getElementById('join-btn').addEventListener('click', () => {
 // --- Socket Listeners ---
 
 // Handle view transition when room is created or joined successfully
-socket.on('room-created', (code) => {
-    showRoom(code);
+socket.on('room-created', (resp) => {
+    showRoom(resp.data.room_code);
 });
 
-socket.on('room-joined', (code) => {
-    showRoom(code);
+socket.on('room-joined', (resp) => {
+    showRoom(resp.data.room_code);
 });
 
 // Listen for synchronized active users list from backend
@@ -60,8 +60,8 @@ socket.on('room-users', (users) => {
 });
 
 // Catch errors sent from backend (e.g., room code invalid)
-socket.on('error-message', (msg) => {
-    alert(msg);
+socket.on('error-message', (resp) => {
+    alert(resp.msg);
 });
 
 
