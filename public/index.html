@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socket.IO Test</title>
+</head>
+<body>
+  <h1>Socket.IO Test</h1>
+  <p id="status">Connecting...</p>
+  <div>
+    <label for="name">name:</label><br>
+    <input type="text" id="user_name" value="john"><br>
+    <label for ="room">room id</label>
+    <input id="room_id" type="text">
+    <button id="join_roombtn">JOIN ROOM</button>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const statusElement = document.getElementById("status");
+    const socket = io();
+    const uname=document.getElementById("user_name");
+    const room_id=document.getElementById("room_id");
+
+    join_roombtn.addEventListener("click",()=>{
+      const r_id=room_id.value;
+      const ur_name=uname.value;
+
+      socket.emit("join-room",r_id,ur_name)
+    })
+
+    socket.on("connect", () => {
+      statusElement.textContent = `Connected: ${socket.id}`;
+    });
+
+    socket.on("disconnect", () => {
+      statusElement.textContent = "Disconnected";
+    });
+  </script>
+</body>
+</html>
