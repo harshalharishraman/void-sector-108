@@ -1,10 +1,14 @@
 const resp=require('../respvo')
+import {Server,Socket} from 'socket.io'
+import type {CustomSocket} from '../interfaces'
 
 class room_actions{
     
     static room_sets=new Map()
 
-    static async create_room_set(io,socket,roomCode){
+    static async create_room_set(
+        io:Server,socket:CustomSocket,roomCode:string)
+        {
         try {
             await socket.join(roomCode);
 
@@ -23,15 +27,17 @@ class room_actions{
         }
     }
 
-    static async updateRoomUsers(io,roomCode) {
+    static async updateRoomUsers(io:Server,roomCode:string) {
 
     try {
     const clients = io.sockets.adapter.rooms.get(roomCode);
-     const users = [];
+     const users:string[]= [];
 
   if (clients) {
     for (const clientId of clients) {
-      const clientSocket = io.sockets.sockets.get(clientId);
+      const clientSocket= io.sockets.sockets.get(clientId) as 
+                          CustomSocket| undefined;
+
       if (clientSocket && clientSocket.username) {
         users.push(clientSocket.username);
       }
@@ -47,7 +53,9 @@ class room_actions{
      
 }
 
-static async add_pyr(io,socket,roomCode){
+static async add_pyr
+(io:Server,socket:CustomSocket,roomCode:string)
+{
     try {
 
         if(this.room_sets.has(roomCode) && !socket.currentRoom){

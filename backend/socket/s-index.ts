@@ -8,7 +8,7 @@ import type {CustomSocket} from '../interfaces'
 
 class s_index{
 
-  static async s_init(io:Server) {
+  static async s_init(io:Server){
     
   io.on("connection", (socket:CustomSocket) => {
     console.log(`Socket connected: ${socket.id}`);

@@ -3,9 +3,10 @@ const rm=require('../managers/roomManager')
 import {Server,Socket} from 'socket.io'
 import type {CustomSocket} from '../interfaces'
 
+
 class rooms{
 
-    static async create_room(io:Server,socket:Socket){
+    static async create_room(io:Server,socket:CustomSocket){
         
     try{
       let rCode:string= await Math.random().toString(36).substring(2, 7).toUpperCase();
@@ -30,12 +31,14 @@ class rooms{
         return new resp(true,'room created',{'room_code':roomCode})
     
     }
-      catch(error){
+      catch(error:any){
         throw error
       }
     }
 
-    static async join_room(io,socket,roomCode){
+    static async join_room(
+      io:Server,socket:CustomSocket,roomCode:string){
+
       try{
       const code = roomCode.toUpperCase().trim();
       const roomExists = await io.sockets.adapter.rooms.has(code);
@@ -67,7 +70,7 @@ class rooms{
             null);}
 
 
-      catch(error){
+      catch(error:any){
 
         throw error
       }
