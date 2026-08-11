@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsx watch backend/index.ts",
     "build": "tsc",
-    "start": "node dist/backend/index.js"
+    "start": "node dist/backend/index.js",
+    "rebuild:frontend": "esbuild frontend/app.ts --bundle --outfile=frontend/app.js --format=iife --platform=browser"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +18,7 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "nodemon": "^3.1.14",
+    "redis": "^6.2.1",
     "socket.io": "^4.8.3",
     "socket.io-client": "^4.8.3"
   },

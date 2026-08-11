@@ -3664,6 +3664,7 @@
       var loginBtn = getEl("login-btn");
       var createBtn = getEl("create-btn");
       var joinBtn = getEl("join-btn");
+      var leaveBtn = getEl("leave-btn");
       loginBtn.addEventListener("click", () => {
         const username = usernameInput.value.trim();
         if (!username) return alert("Please enter a username");
@@ -3680,6 +3681,9 @@
         if (!code) return alert("Please enter a room code");
         socket.emit("join-room", code);
       });
+      leaveBtn.addEventListener("click", () => {
+        socket.emit("leave-room");
+      });
       socket.on("room-created", (resp) => {
         showRoom(resp.data.room_code);
       });
@@ -3695,7 +3699,12 @@
           userList.appendChild(li);
         });
       });
-      socket.on("leave-room", (resp) => {
+      socket.on("left-room", (resp) => {
+        roomScreen.classList.add("hidden");
+        lobbyScreen.classList.remove("hidden");
+        roomCodeDisplay.textContent = "";
+        userList.innerHTML = "";
+        roomInput.value = "";
       });
       socket.on("error-message", (resp) => {
         alert(resp.msg);

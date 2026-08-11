@@ -47,7 +47,7 @@ class room_actions{
     new resp(true,'updated room userslist',{'users':users}));
    
 }
-    catch (error) {
+    catch (error:any) {
         throw error;
     }
      
@@ -67,14 +67,53 @@ static async add_pyr
                 null)
             }
        
-        return new resp(false,`no such room set found`,null)
+        return new resp(false,
+            `no such room set found`,
+            null)
         
             }
     
-    catch(error){
+    catch(error:any){
         throw error
         
     }
+}
+
+static async pyr_leave
+(io:Server,socket:CustomSocket,roomCode:string){
+
+    try{
+        const room = this.room_sets.get(roomCode);
+
+        if (!room) {
+            return new resp(false, "room set not found", {
+                room_code: roomCode});
+    }
+
+    if(socket.currentRoom===roomCode){
+
+            await socket.leave(roomCode);
+
+            room.players--;
+
+            if (room.players <= 0) {
+                this.room_sets.delete(roomCode);
+            }
+
+            return new resp(true,
+                `socket:${socket.id} removed from room set:${roomCode}`,
+                null)
+            }
+       
+        return new resp(false,`no such room set found`,null);
+        
+            }
+
+    catch (error:any) {
+        throw error;
+    }
+
+
 }
 }
 

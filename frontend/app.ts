@@ -17,12 +17,13 @@ const userList = getEl<HTMLUListElement>('user-list');
 const loginBtn = getEl<HTMLButtonElement>('login-btn');
 const createBtn = getEl<HTMLButtonElement>('create-btn');
 const joinBtn = getEl<HTMLButtonElement>('join-btn');
+const leaveBtn = getEl<HTMLButtonElement>('leave-btn');
 
 // --- Event Listeners ---
 
 // Submit Username
 loginBtn.addEventListener('click', () => {
-    const username = usernameInput.value.trim();
+    const username:string= usernameInput.value.trim();
     if (!username) return alert("Please enter a username");
 
     socket.emit('join-setup', { username });
@@ -42,6 +43,10 @@ joinBtn.addEventListener('click', () => {
     const code = roomInput.value.trim();
     if (!code) return alert("Please enter a room code");
     socket.emit('join-room', code);
+});
+
+leaveBtn.addEventListener('click', () => {
+    socket.emit('leave-room');
 });
 
 
@@ -67,7 +72,16 @@ socket.on('room-users', (resp) => {
     });
 });
 
-socket.on('leave-room',(resp)=>{})
+socket.on('left-room', (resp) => {
+    
+  roomScreen.classList.add('hidden');
+  lobbyScreen.classList.remove('hidden');
+
+  roomCodeDisplay.textContent = '';
+  userList.innerHTML = '';
+  roomInput.value = '';
+  
+});
 
 // Catch errors sent from backend (e.g., room code invalid)
 socket.on('error-message', (resp) => {

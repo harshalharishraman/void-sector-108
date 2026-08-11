@@ -55,23 +55,41 @@ socket.on('leave-room',async ()=>{
   try {
     const room_code=socket.currentRoom;
 
-    if(room_code){
-      
+    if(!room_code){
+      return socket.emit('error-message', 'cant find room_code');
     }
+
+    const from_rs=await rooms.leave_room(io,socket,room_code);
+
+    if(!from_rs.success){
+        return socket.emit('error-message', from_rs)
+      }
+
+    socket.emit('left-room',from_rs)
+
   }
   
   catch (error:any){
-    
+    socket.emit("error-message",new resp(false,"backed error",{"error":error}));
+    console.error(error);
   }
 })
 
     // Disconnect
     socket.on("disconnect", async () => {
-      if (socket.currentRoom) {
-        await rm.updateRoomUsers(io, socket.currentRoom);
-      }
-      console.log(`Socket disconnected: ${socket.id}`);
-    });
+  try {
+    const roomCode = socket.currentRoom;
+
+    if (roomCode) {
+      await rm.pyr_leave(io, socket, roomCode);
+      await rm.updateRoomUsers(io, roomCode);
+    }
+
+    console.log(`Socket disconnected: ${socket.id}`);
+  } catch (error: unknown) {
+    console.error(error);
+  }
+});
   });
 };
 }
