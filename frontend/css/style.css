@@ -43,3 +43,18 @@ ul {
 #room-code-display {
     color: #007bff;
 }
+
+#ready-btn {
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+#ready-btn.ready-false {
+  background-color: red;
+}
+
+#ready-btn.ready-true {
+  background-color: blue;
+}

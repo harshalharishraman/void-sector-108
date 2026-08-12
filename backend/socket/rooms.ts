@@ -23,7 +23,7 @@ class rooms{
 
       if(!from_rm.success){
         return new resp(false,
-          'cant create room',
+          from_rm.msg,
           {
             room_code: roomCode,
             reason: from_rm.msg
@@ -60,7 +60,7 @@ class rooms{
 
         if(!from_rm.success){
             return new resp(false,
-            "cant add player",
+            from_rm.msg,
             {
               room_code: roomCode,
               reason: from_rm.msg
@@ -100,7 +100,7 @@ class rooms{
         
         if(!from_rm.success){
             return new resp(false,
-            "cant remove player",
+            from_rm.msg,
             {
               room_code: roomCode,
               reason: from_rm.msg

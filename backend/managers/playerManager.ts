@@ -28,6 +28,25 @@ class player{
                 throw error;
             }
         }
+
+    static async del_userName
+    (io: Server, socket: CustomSocket, uname: string) {
+        try {
+    const user_name = uname.trim().toUpperCase();
+
+    if (!this.player_names.has(user_name)) {
+      return new resp(false, 'username not found', null);
+    }
+
+    this.player_names.delete(user_name);
+
+
+    return new resp(true, 'username deleted', null);
+  } catch (error: unknown) {
+    throw error;
+  }
+}
+
 }
 
 module.exports=player;

@@ -3665,6 +3665,7 @@
       var createBtn = getEl("create-btn");
       var joinBtn = getEl("join-btn");
       var leaveBtn = getEl("leave-btn");
+      var readyBtn = getEl("ready-btn");
       loginBtn.addEventListener("click", () => {
         const username = usernameInput.value.trim();
         if (!username) return alert("Please enter a username");
@@ -3680,6 +3681,9 @@
       });
       leaveBtn.addEventListener("click", () => {
         socket.emit("leave-room");
+      });
+      readyBtn.addEventListener("click", () => {
+        socket.emit("change-ready-status");
       });
       socket.on("room-created", (resp) => {
         showRoom(resp.data.room_code);
@@ -3710,6 +3714,11 @@
         displayName.textContent = resp.username;
         authScreen.classList.add("hidden");
         lobbyScreen.classList.remove("hidden");
+      });
+      socket.on("changed-ready-status", (resp) => {
+        readyBtn.classList.toggle("ready-true", resp.data.ready);
+        readyBtn.classList.toggle("ready-false", !resp.data.ready);
+        readyBtn.textContent = resp.data.ready ? "Ready" : "Not Ready";
       });
       function showRoom(code) {
         lobbyScreen.classList.add("hidden");

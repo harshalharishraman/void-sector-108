@@ -82,15 +82,54 @@ socket.on('leave-room',async ()=>{
     socket.emit("error-message",new resp(false,"backed error",{"error":error}));
     console.error(error);
   }
+});
+
+socket.on('change-ready-status', async ()=>{
+
+  try {
+    if (!socket.currentRoom){
+      return socket.emit("error-message",
+      'player is not in a room');
+                }
+
+    if (!socket.username){
+      return socket.emit("error-message",
+        'username not set',);
+                }
+
+    const from_rm=await rm.change_player_status(io,socket);
+
+    if(!from_rm.success){
+        return socket.emit('error-message', from_rm)
+      }
+
+    socket.emit('changed-ready-status',from_rm)
+      
+    
+  }
+
+  catch (error:any) {
+
+    socket.emit("error-message",
+      new resp(false,
+        "backed error",
+        {"error":error}));
+
+    console.error(error);
+  }
 })
 
     // Disconnect
     socket.on("disconnect", async () => {
   try {
     const roomCode = socket.currentRoom;
+    const user=socket.username;
 
+    if(user){
+      await pm.del_userName(io,socket,socket.username);
+    }
     if (roomCode) {
-      await rm.pyr_leave(io, socket, roomCode);
+      await rm.pyr_leave(io, socket,roomCode);
       await rm.updateRoomUsers(io, roomCode);
     }
 
@@ -99,6 +138,7 @@ socket.on('leave-room',async ()=>{
     console.error(error);
   }
 });
+
   });
 };
 }

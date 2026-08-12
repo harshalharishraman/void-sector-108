@@ -18,7 +18,7 @@ const loginBtn = getEl<HTMLButtonElement>('login-btn');
 const createBtn = getEl<HTMLButtonElement>('create-btn');
 const joinBtn = getEl<HTMLButtonElement>('join-btn');
 const leaveBtn = getEl<HTMLButtonElement>('leave-btn');
-
+const readyBtn=getEl<HTMLButtonElement>('ready-btn');
 // --- Event Listeners ---
 
 // Submit Username
@@ -44,6 +44,12 @@ joinBtn.addEventListener('click', () => {
 
 leaveBtn.addEventListener('click', () => {
     socket.emit('leave-room');
+});
+
+readyBtn.addEventListener('click', ()=>{
+
+    socket.emit('change-ready-status');
+
 });
 
 
@@ -90,7 +96,15 @@ displayName.textContent = resp.username;
     
     authScreen.classList.add('hidden');
     lobbyScreen.classList.remove('hidden');
-})
+});
+
+socket.on('changed-ready-status',(resp)=>{
+
+readyBtn.classList.toggle('ready-true', resp.data.ready);
+readyBtn.classList.toggle('ready-false', !resp.data.ready);
+readyBtn.textContent = resp.data.ready ? 'Ready' : 'Not Ready';
+
+});
 
 
 // --- UI Helper Functions ---

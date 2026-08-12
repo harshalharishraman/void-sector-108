@@ -1,10 +1,27 @@
-# Void Sector 108 Graph
+import fs from 'fs';
+import path from 'path';
+
+const root = process.cwd();
+
+const files = [
+  'backend/index.ts',
+  'backend/socket/s-index.ts',
+  'backend/socket/rooms.ts',
+  'backend/managers/roomManager.ts',
+  'backend/respvo.ts',
+  'backend/interfaces.ts',
+  'frontend/index.html',
+  'frontend/app.ts',
+  'frontend/utils.ts',
+];
+
+const graph = `# Void Sector 108 Graph
 
 Generated from project source notes.
 
 ## Module Dependency Graph
 
-```mermaid
+\`\`\`mermaid
 flowchart TD
   Browser["frontend/index.html"]
   FrontendApp["frontend/app.ts"]
@@ -32,11 +49,11 @@ flowchart TD
   Rooms --> Interfaces
   RoomManager --> Resp
   RoomManager --> Interfaces
-```
+\`\`\`
 
 ## Socket Flow
 
-```mermaid
+\`\`\`mermaid
 sequenceDiagram
   participant UI as frontend/app.ts
   participant S as Socket.IO
@@ -68,16 +85,12 @@ sequenceDiagram
   R->>RM: pyr_leave(...)
   R->>RM: updateRoomUsers(...)
   SI->>UI: left-room
-```
+\`\`\`
 
 ## Source Files
 
-- `backend/index.ts`
-- `backend/socket/s-index.ts`
-- `backend/socket/rooms.ts`
-- `backend/managers/roomManager.ts`
-- `backend/respvo.ts`
-- `backend/interfaces.ts`
-- `frontend/index.html`
-- `frontend/app.ts`
-- `frontend/utils.ts`
+${files.map((file) => `- \`${file}\``).join('\n')}
+`;
+
+fs.writeFileSync(path.join(root, 'GRAPH.md'), graph);
+console.log('GRAPH.md updated');
