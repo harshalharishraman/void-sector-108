@@ -9,7 +9,8 @@
   <body>
     <div id="auth-screen" class="box">
       <h3>Enter Username</h3>
-      <input type="text" id="username-input" placeholder="Your name..." />
+      <input type="text" id="username-input" placeholder="Your name..."
+      maxlength="15" />
       <button id="login-btn">Next</button>
     </div>
 
@@ -25,7 +26,12 @@
       <h2>Room Code: <span id="room-code-display"></span></h2>
       <h3>Users in this room:</h3>
       <ul id="user-list"></ul>
-      <button id="leave-btn" onclick="window.location.reload()">
+
+      <button id="ready-btn" class="ready-false">
+          NOT READY
+        </button>
+        
+      <button id="leave-btn">
         Leave Room
       </button>
     </div>
