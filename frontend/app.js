@@ -3669,9 +3669,6 @@
         const username = usernameInput.value.trim();
         if (!username) return alert("Please enter a username");
         socket.emit("join-setup", { username });
-        displayName.textContent = username;
-        authScreen.classList.add("hidden");
-        lobbyScreen.classList.remove("hidden");
       });
       createBtn.addEventListener("click", () => {
         socket.emit("create-room");
@@ -3708,6 +3705,11 @@
       });
       socket.on("error-message", (resp) => {
         alert(resp.msg);
+      });
+      socket.on("joined-setup", (resp) => {
+        displayName.textContent = resp.username;
+        authScreen.classList.add("hidden");
+        lobbyScreen.classList.remove("hidden");
       });
       function showRoom(code) {
         lobbyScreen.classList.add("hidden");

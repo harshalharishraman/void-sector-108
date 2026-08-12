@@ -15,7 +15,6 @@ class rooms{
       if(io.sockets.adapter.rooms.has(rCode)){
         rCode=await Math.random().
         toString(36).substring(2, 7).toUpperCase();
-
       }
       
       const roomCode:string=rCode;
@@ -88,7 +87,7 @@ class rooms{
   static async leave_room(
     io:Server,socket:CustomSocket,roomCode:string){
       try {
-        const code = roomCode.toUpperCase().trim();
+        const code:string= roomCode.toUpperCase().trim();
       const roomExists:boolean= await io.sockets.adapter.rooms.has(code);
 
       if (!roomExists) {

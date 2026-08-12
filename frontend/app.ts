@@ -27,10 +27,7 @@ loginBtn.addEventListener('click', () => {
     if (!username) return alert("Please enter a username");
 
     socket.emit('join-setup', { username });
-    displayName.textContent = username;
     
-    authScreen.classList.add('hidden');
-    lobbyScreen.classList.remove('hidden');
 });
 
 // Create Room Request
@@ -87,6 +84,13 @@ socket.on('left-room', (resp) => {
 socket.on('error-message', (resp) => {
     alert(resp.msg);
 });
+
+socket.on('joined-setup',(resp)=>{
+displayName.textContent = resp.username;
+    
+    authScreen.classList.add('hidden');
+    lobbyScreen.classList.remove('hidden');
+})
 
 
 // --- UI Helper Functions ---

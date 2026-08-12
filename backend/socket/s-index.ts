@@ -3,6 +3,7 @@
 const resp=require('../respvo')
 const rooms=require('./rooms')
 const rm=require('../managers/roomManager')
+const pm=require('../managers/playerManager');
 import {Server,Socket} from 'socket.io'
 import type {CustomSocket} from '../interfaces'
 
@@ -10,11 +11,19 @@ class s_index{
 
   static async s_init(io:Server){
     
-  io.on("connection", (socket:CustomSocket) => {
+  io.on("connection",(socket:CustomSocket) =>{
     console.log(`Socket connected: ${socket.id}`);
 
-    socket.on("join-setup", ({ username }) => {
+    socket.on("join-setup", async ({ username }) => {
+      const from_pm=await pm.check_userName(io,socket,username)
+
+      if(from_pm.success){
+        return socket.emit('error-message', from_pm);
+      }
       socket.username = username;
+
+      socket.emit('joined-setup',{username});
+
     });
 
     // Create Room
