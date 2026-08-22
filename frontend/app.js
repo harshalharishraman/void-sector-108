@@ -3696,7 +3696,13 @@
         userList.innerHTML = "";
         users.forEach((user) => {
           const li = createEl("li");
-          li.textContent = user;
+          const name = createEl("span");
+          let stat = createEl("span");
+          stat.dataset.username = user.username;
+          name.textContent = user.username;
+          stat.textContent = user.ready ? "READY" : "NOT READY";
+          li.appendChild(name);
+          li.appendChild(stat);
           userList.appendChild(li);
         });
       });
@@ -3716,9 +3722,19 @@
         lobbyScreen.classList.remove("hidden");
       });
       socket.on("changed-ready-status", (resp) => {
-        readyBtn.classList.toggle("ready-true", resp.data.ready);
-        readyBtn.classList.toggle("ready-false", !resp.data.ready);
-        readyBtn.textContent = resp.data.ready ? "Ready" : "Not Ready";
+        const username = resp.data.username;
+        const ready = resp.data.ready;
+        readyBtn.classList.toggle("ready-true", ready);
+        readyBtn.classList.toggle("ready-false", !ready);
+        readyBtn.textContent = ready ? "READY" : "NOT READY";
+        let stat = document.querySelector(
+          `[data-username="${username}"]`
+        );
+        if (stat) {
+          stat.textContent = ready ? "READY" : "NOT READY";
+          stat.classList.toggle("status-true", ready);
+          stat.classList.toggle("status-flase", !ready);
+        }
       });
       function showRoom(code) {
         lobbyScreen.classList.add("hidden");

@@ -56,7 +56,8 @@ class s_index{
     }
     
     catch(error:any){
-    socket.emit("error-message",new resp(false,"backed error",{"error":error}));
+    socket.emit("error-message",
+      new resp(false,"backed error",{"error":error}));
     console.error(error);
 }});
 
@@ -103,7 +104,7 @@ socket.on('change-ready-status', async ()=>{
         return socket.emit('error-message', from_rm)
       }
 
-    socket.emit('changed-ready-status',from_rm)
+    io.to(socket.currentRoom).emit('changed-ready-status',from_rm)
       
     
   }

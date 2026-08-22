@@ -1,5 +1,7 @@
 import {io,Socket} from 'socket.io-client';
 import {getEl,createEl} from './utils'
+//import fs from 'fs';
+//import path from 'path';
 
 const socket:Socket = io();
 
@@ -66,11 +68,21 @@ socket.on('room-joined', (resp) => {
 
 // Listen for synchronized active users list from backend
 socket.on('room-users', (resp) => {
-    const users:string []=resp.data.users
+    const users:{username:string,ready:boolean}[]=resp.data.users
     userList.innerHTML = '';
     users.forEach(user=> {
         const li = createEl<HTMLLIElement>('li');
-        li.textContent = user;
+
+        const name=createEl<HTMLElement>('span');
+
+        let stat=createEl<HTMLElement>('span');
+        stat.dataset.username=user.username;
+
+        name.textContent = user.username;
+        stat.textContent = user.ready?'READY':'NOT READY';
+        
+        li.appendChild(name);
+        li.appendChild(stat);
         userList.appendChild(li);
     });
 });
@@ -99,10 +111,23 @@ displayName.textContent = resp.username;
 });
 
 socket.on('changed-ready-status',(resp)=>{
+const username: string = resp.data.username;
+const ready: boolean = resp.data.ready;
 
-readyBtn.classList.toggle('ready-true', resp.data.ready);
-readyBtn.classList.toggle('ready-false', !resp.data.ready);
-readyBtn.textContent = resp.data.ready ? 'Ready' : 'Not Ready';
+readyBtn.classList.toggle('ready-true', ready);
+readyBtn.classList.toggle('ready-false', !ready);
+
+readyBtn.textContent = ready? 'READY' : 'NOT READY';
+
+let stat = document.querySelector<HTMLSpanElement>(
+  `[data-username="${username}"]`
+);
+
+if(stat){
+    stat.textContent=ready?'READY' : 'NOT READY';
+    stat.classList.toggle('status-true',ready);
+    stat.classList.toggle('status-flase',!ready);
+}
 
 });
 

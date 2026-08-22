@@ -34,7 +34,7 @@ class room_actions{
 
     try {
     const clients = io.sockets.adapter.rooms.get(roomCode);
-     const users:string[]= [];
+     const users:{username:string,ready:boolean}[]= [];
 
   if (clients) {
     for (const clientId of clients) {
@@ -42,7 +42,8 @@ class room_actions{
                           CustomSocket| undefined;
 
       if (clientSocket && clientSocket.username) {
-        users.push(clientSocket.username);
+        users.push({username:clientSocket.username,
+            ready:clientSocket.ready??false});
       }
     }
   }
