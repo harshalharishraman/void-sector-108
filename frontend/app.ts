@@ -55,6 +55,12 @@ readyBtn.addEventListener('click', ()=>{
 });
 
 
+interface Player{
+    username:string,
+    id?:string,
+    ready?:string
+}
+
 // --- Socket Listeners ---
 
 // Handle view transition when room is created or joined successfully
@@ -68,21 +74,45 @@ socket.on('room-joined', (resp) => {
 
 // Listen for synchronized active users list from backend
 socket.on('room-users', (resp) => {
-    const users:{username:string,ready:boolean}[]=resp.data.users
+    const users:Player[]=resp.data.users
     userList.innerHTML = '';
     users.forEach(user=> {
         const li = createEl<HTMLLIElement>('li');
 
         const name=createEl<HTMLElement>('span');
 
-        let stat=createEl<HTMLElement>('span');
-        stat.dataset.username=user.username;
+        const stat=createEl<HTMLElement>('span');
+
+        
+        
 
         name.textContent = user.username;
+        name.className = 'player-name';
+
+        stat.dataset.username=user.username;
         stat.textContent = user.ready?'READY':'NOT READY';
-        
+        stat.className = 'player-status';
+
+
         li.appendChild(name);
         li.appendChild(stat);
+
+        if(socket.id==resp.data.host_id){
+        if(resp.data.host_uname!=user.username){
+
+            const to_kick_out=createEl<HTMLButtonElement>('button');
+
+            to_kick_out.textContent='KICK OUT';
+            to_kick_out.className='kick-out-btn'
+
+            to_kick_out.addEventListener('click',()=>{
+                socket.emit('kick-out-player',
+                    user.username)
+            });
+
+            li.appendChild(to_kick_out);
+        }}
+        
         userList.appendChild(li);
     });
 });
@@ -111,6 +141,7 @@ displayName.textContent = resp.username;
 });
 
 socket.on('changed-ready-status',(resp)=>{
+    
 const username: string = resp.data.username;
 const ready: boolean = resp.data.ready;
 
@@ -128,6 +159,14 @@ if(stat){
     stat.classList.toggle('status-true',ready);
     stat.classList.toggle('status-flase',!ready);
 }
+
+});
+
+socket.on('kicked-out-player',(resp)=>{
+
+    const kick_out_player:Player={
+        username:resp.data.kicked_out_uname,
+        id:resp.data.kicked_out_id};
 
 });
 

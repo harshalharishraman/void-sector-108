@@ -453,35 +453,56 @@ ul {
     border-style: dashed;
 }
 
-
 /* =========================================================
    USER LIST
    ========================================================= */
 
 #user-list li {
     display: flex;
-
-    justify-content: space-between;
     align-items: center;
-
-    gap: 12px;
+    gap: 10px;
 
     margin: 8px 0;
     padding: 10px 0;
 
-    border-bottom:
-        1px solid rgb(79 174 58 / 25%);
+    border-bottom: 1px solid rgb(79 174 58 / 25%);
 
     text-transform: uppercase;
-
     font-size: 15px;
-
     line-height: 1.5;
 }
 
-
+/* > marker */
 #user-list li::before {
-    content: "> ";
-
+    content: ">";
     color: var(--green);
+    flex-shrink: 0;
+}
+
+/* USERNAME */
+#user-list li .player-name {
+    flex: 1;
+    min-width: 0;
+}
+
+/* READY / NOT READY */
+#user-list li .player-status {
+    width: 104px;
+    min-width: 104px;
+
+    text-align: center;
+}
+
+/* KICK OUT */
+#user-list li .kick-out-btn {
+    width: 70px;
+    min-width: 70px;
+    height: 28px;
+
+    margin: 0;
+    padding: 4px;
+
+    font-size: 10px;
+
+    flex-shrink: 0;
 }

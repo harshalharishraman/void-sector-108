@@ -109,7 +109,7 @@ socket.on('change-ready-status', async ()=>{
     
   }
 
-  catch (error:any) {
+  catch (error:unknown) {
 
     socket.emit("error-message",
       new resp(false,
@@ -118,7 +118,38 @@ socket.on('change-ready-status', async ()=>{
 
     console.error(error);
   }
-})
+});
+
+socket.on('kick-out-player',async(kick_out_uname:string)=>{
+  try {
+    if (!socket.currentRoom){
+      return socket.emit("error-message",
+      'player is not in a room');
+                }
+
+    if (!socket.username){
+      return socket.emit("error-message",
+        'username not set',);
+                }
+    
+    const from_rm=await rm.to_kick_player(io,socket,kick_out_uname);
+
+    if(!from_rm.success){
+        return socket.emit('error-message', from_rm)
+      }
+
+    io.to(socket.currentRoom).emit('kicked-out-player',from_rm)
+  }
+  
+  catch(error:unknown) {
+    socket.emit("error-message",
+      new resp(false,
+        "backed error",
+        {"error":error}));
+
+    console.error(error);
+  }
+});
 
     // Disconnect
     socket.on("disconnect", async () => {
@@ -136,6 +167,11 @@ socket.on('change-ready-status', async ()=>{
 
     console.log(`Socket disconnected: ${socket.id}`);
   } catch (error: unknown) {
+     socket.emit("error-message",
+      new resp(false,
+        "backed error",
+        {"error":error}));
+
     console.error(error);
   }
 });

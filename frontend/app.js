@@ -3697,12 +3697,28 @@
         users.forEach((user) => {
           const li = createEl("li");
           const name = createEl("span");
-          let stat = createEl("span");
-          stat.dataset.username = user.username;
+          const stat = createEl("span");
           name.textContent = user.username;
+          name.className = "player-name";
+          stat.dataset.username = user.username;
           stat.textContent = user.ready ? "READY" : "NOT READY";
+          stat.className = "player-status";
           li.appendChild(name);
           li.appendChild(stat);
+          if (socket.id == resp.data.host_id) {
+            if (resp.data.host_uname != user.username) {
+              const to_kick_out = createEl("button");
+              to_kick_out.textContent = "KICK OUT";
+              to_kick_out.className = "kick-out-btn";
+              to_kick_out.addEventListener("click", () => {
+                socket.emit(
+                  "kick-out-player",
+                  user.username
+                );
+              });
+              li.appendChild(to_kick_out);
+            }
+          }
           userList.appendChild(li);
         });
       });
@@ -3735,6 +3751,12 @@
           stat.classList.toggle("status-true", ready);
           stat.classList.toggle("status-flase", !ready);
         }
+      });
+      socket.on("kicked-out-player", (resp) => {
+        const kick_out_player = {
+          username: resp.data.kicked_out_uname,
+          id: resp.data.kicked_out_id
+        };
       });
       function showRoom(code) {
         lobbyScreen.classList.add("hidden");

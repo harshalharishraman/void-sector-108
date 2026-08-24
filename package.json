@@ -16,6 +16,7 @@
   "type": "commonjs",
   "dependencies": {
     "axios": "^1.18.1",
+    "cline": "^3.0.57",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "nodemon": "^3.1.14",
