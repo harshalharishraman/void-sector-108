@@ -1,8 +1,8 @@
-# Void Sector 108 - Realtime Lobby Backend Notes
+# Void Sector 108 - Realtime Multiplayer Lobby
 
-Void Sector 108 is currently a TypeScript Socket.IO room/lobby prototype. The project has moved from an early single-file socket experiment into a cleaner multiplayer lobby shape: the HTTP server boots the process, Socket.IO owns realtime transport, socket handlers own event registration, and room-state operations now live behind a room manager.
+Void Sector 108 is a TypeScript Socket.IO multiplayer lobby prototype. The current code supports username setup, room creation and joining, synchronized room-user status, ready toggling, host-controlled player removal, and the first stage of player-input transport.
 
-This is the right first layer for a backend game flow: players connect, identify themselves, create or join a room, and receive synchronized room-user state before later systems such as ready checks, loadouts, host migration, and match start are added.
+The backend is organized around an authoritative server boundary: Express serves the frontend, Socket.IO owns realtime transport, socket handlers register events, room operations live in `roomManager.ts`, and player input state is stored by `playerManager.ts`. Gameplay simulation is not complete yet; the current input action module logs received directions and is ready to be replaced by a real game loop.
 
 ## Current Runtime Shape
 

@@ -5,7 +5,7 @@ const rooms=require('./rooms')
 const rm=require('../managers/roomManager')
 const pm=require('../managers/playerManager');
 import {Server,Socket} from 'socket.io'
-import type {CustomSocket} from '../interfaces'
+import type {CustomSocket, InputPacket, PlayerInput} from '../interfaces'
 
 class s_index{
 
@@ -81,6 +81,33 @@ socket.on('leave-room',async ()=>{
   
   catch (error:any){
     socket.emit("error-message",new resp(false,"backed error",{"error":error}));
+    console.error(error);
+  }
+});
+
+
+socket.on('player-input',async (input:InputPacket)=>{
+  try {
+    if (!socket.currentRoom){
+      return socket.emit("error-message",
+      'player is not in a room');
+                }
+
+    if (!socket.username){
+      return socket.emit("error-message",
+        'username not set',);
+                }
+    
+    pm.updateplayerInput(io,socket,input);
+  }
+  
+  catch(error:any) {
+    
+    socket.emit("error-message",
+      new resp(false,
+        "backed error",
+        {"error":error}));
+
     console.error(error);
   }
 });

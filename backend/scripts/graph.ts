@@ -4,15 +4,17 @@ import path from 'path';
 const root = process.cwd();
 
 const files = [
-  'backend/index.ts',
-  'backend/socket/s-index.ts',
-  'backend/socket/rooms.ts',
-  'backend/managers/roomManager.ts',
-  'backend/respvo.ts',
-  'backend/interfaces.ts',
-  'frontend/index.html',
-  'frontend/app.ts',
-  'frontend/utils.ts',
+  "backend/index.ts",
+  "backend/socket/s-index.ts",
+  "backend/socket/rooms.ts",
+  "backend/managers/roomManager.ts",
+  "backend/managers/playerManager.ts",
+  "backend/gameLoop/plyr_actions.ts",
+  "backend/respvo.ts",
+  "backend/interfaces.ts",
+  "frontend/index.html",
+  "frontend/app.ts",
+  "frontend/utils.ts"
 ];
 
 const graph = `# Void Sector 108 Graph
@@ -34,6 +36,8 @@ flowchart TD
   RoomManager["backend/managers/roomManager.ts"]
   Resp["backend/respvo.ts"]
   Interfaces["backend/interfaces.ts"]
+  PlayerManager["backend/managers/playerManager.ts"]
+PlayerActions["backend/gameLoop/plyr_actions.ts"]
 
   Browser --> FrontendBundle
   FrontendApp --> FrontendBundle
@@ -49,6 +53,10 @@ flowchart TD
   Rooms --> Interfaces
   RoomManager --> Resp
   RoomManager --> Interfaces
+  SocketIndex --> PlayerManager
+PlayerManager --> PlayerActions
+PlayerManager --> Interfaces
+PlayerActions --> Interfaces
 \`\`\`
 
 ## Socket Flow

@@ -506,3 +506,948 @@ ul {
 
     flex-shrink: 0;
 }
+
+/*test*/
+:root {
+    --bg: #050705;
+    --panel: #0a0d0a;
+    --retro-bg: #182019;
+
+    --green: #4fae3a;
+    --green-dark: #367f2a;
+    --green-deep: #1d4d1c;
+    --green-dim: #326f2b;
+    --green-faint: rgb(79 174 58 / 12%);
+
+    --border: 2px solid var(--green);
+
+    --font-pixel: "Press Start 2P", "Courier New", monospace;
+
+    /* Hard pixel shadows — NO blur */
+    --shadow-pixel: 4px 4px 0 var(--green-deep);
+
+    /* Space Animation Variables */
+    --planet-size: 220px;
+    --ring-size: 480px;
+    --rotation-speed: 120s;
+}
+
+
+/* =========================================================
+   BASE
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    position: relative;
+    overflow-x: hidden;
+
+    margin: 0;
+    padding: 32px;
+
+    background-color: var(--bg);
+
+    background-image:
+        repeating-linear-gradient(
+            -35deg,
+            transparent 0 18px,
+            rgb(79 174 58 / 3%) 19px 20px
+        ),
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0 7px,
+            rgb(79 174 58 / 2%) 8px
+        );
+
+    color: var(--green);
+
+    font-family: var(--font-pixel);
+
+    text-shadow: none;
+
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* =========================================================
+   CRT SCANLINES
+   ========================================================= */
+
+body::after {
+    content: "";
+
+    position: fixed;
+    inset: 0;
+
+    z-index: 9999;
+    pointer-events: none;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0,
+            transparent 3px,
+            rgb(0 0 0 / 12%) 4px
+        );
+
+    opacity: 0.3;
+}
+
+
+/* =========================================================
+   BOX / PANEL
+   ========================================================= */
+
+.box {
+    position: relative;
+    z-index: 10;
+
+    max-width: 560px;
+    margin-bottom: 24px;
+    padding: 24px;
+
+    background: var(--panel);
+
+    border: var(--border);
+    border-radius: 0;
+
+    box-shadow:
+        var(--shadow-pixel),
+        0 0 0 1px rgb(79 174 58 / 10%);
+
+    image-rendering: pixelated;
+}
+
+
+/* =========================================================
+   PANEL HEADER
+   ========================================================= */
+
+.box::before {
+    content: "> SYSTEM LOBBY";
+
+    display: block;
+
+    margin-bottom: 16px;
+
+    color: var(--green);
+
+    font-family: var(--font-pixel);
+
+    font-size: 11px;
+
+    line-height: 1.6;
+
+    text-transform: uppercase;
+
+    text-shadow: none;
+}
+
+
+/* =========================================================
+   PIXEL DECORATION
+   ========================================================= */
+
+.box::after {
+    content: "";
+
+    position: absolute;
+
+    top: 14px;
+    right: 14px;
+
+    width: 40px;
+    height: 40px;
+
+    background-image:
+        radial-gradient(
+            var(--green) 1.5px,
+            transparent 1.5px
+        );
+
+    background-size: 7px 7px;
+
+    opacity: 0.35;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   UTILITY
+   ========================================================= */
+
+.hidden {
+    display: none;
+}
+
+
+/* =========================================================
+   HEADINGS
+   ========================================================= */
+
+h2,
+h3 {
+    color: var(--green);
+
+    letter-spacing: 0;
+
+    line-height: 1.5;
+
+    text-transform: uppercase;
+
+    text-shadow: none;
+}
+
+h2::before,
+h3::before {
+    content: "> ";
+}
+
+
+/* =========================================================
+   INPUT + BUTTON BASE
+   ========================================================= */
+
+input,
+button {
+    width: 100%;
+
+    margin: 8px 0;
+    padding: 12px;
+
+    box-sizing: border-box;
+
+    font-family: var(--font-pixel);
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   INPUT
+   ========================================================= */
+
+input {
+    background: #020302;
+
+    color: var(--green);
+
+    border: var(--border);
+    border-radius: 0;
+
+    outline: none;
+
+    text-transform: uppercase;
+
+    box-shadow: inset 0 0 0 1px rgb(79 174 58 / 8%);
+}
+
+input::placeholder {
+    color: rgb(79 174 58 / 45%);
+}
+
+input:focus {
+    background: #070b07;
+
+    border-color: var(--green);
+
+    box-shadow:
+        inset 3px 0 0 var(--green),
+        4px 4px 0 var(--green-deep);
+}
+
+
+/* =========================================================
+   BUTTON
+   ========================================================= */
+
+button {
+    appearance: none;
+
+    background: #020302;
+
+    color: var(--green);
+
+    border: var(--border);
+    border-radius: 0;
+
+    cursor: pointer;
+
+    text-transform: uppercase;
+
+    text-shadow: none;
+
+    box-shadow: 4px 4px 0 var(--green-deep);
+
+    transition: none;
+}
+
+
+/* =========================================================
+   BUTTON HOVER
+   ========================================================= */
+
+button:hover {
+    background: var(--green);
+
+    color: #050705;
+
+    text-shadow: none;
+
+    box-shadow: 4px 4px 0 var(--green-deep);
+}
+
+
+/* =========================================================
+   BUTTON PRESS
+   ========================================================= */
+
+button:active {
+    transform: translate(4px, 4px);
+
+    box-shadow: 0 0 0 var(--green-deep);
+}
+
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+hr {
+    border: 0;
+
+    border-top: 2px solid var(--green);
+}
+
+
+/* =========================================================
+   LIST
+   ========================================================= */
+
+ul {
+    padding-left: 0;
+
+    list-style: none;
+}
+
+
+/* =========================================================
+   ROOM CODE
+   ========================================================= */
+
+#room-code-display {
+    color: var(--green);
+
+    text-shadow: none;
+
+    letter-spacing: 2px;
+}
+
+
+/* =========================================================
+   READY BUTTON
+   ========================================================= */
+
+#ready-btn.ready-false {
+    background: #020302;
+
+    color: var(--green);
+
+    border-style: dashed;
+
+    box-shadow: 4px 4px 0 var(--green-deep);
+}
+
+
+#ready-btn.ready-true {
+    background: var(--green);
+
+    color: #050705;
+
+    text-shadow: none;
+
+    box-shadow: 4px 4px 0 var(--green-deep);
+}
+
+
+/* =========================================================
+   USER STATUS
+   ========================================================= */
+
+.status-ready,
+.status-not-ready {
+    min-width: 104px;
+
+    padding: 5px 8px;
+
+    border: 2px solid var(--green);
+    border-radius: 0;
+
+    font-family: var(--font-pixel);
+
+    font-size: 8px;
+
+    font-weight: normal;
+
+    margin-left: 8px;
+
+    text-align: center;
+
+    text-transform: uppercase;
+}
+
+
+/* READY */
+
+.status-ready {
+    background: var(--green);
+
+    color: #050705;
+
+    text-shadow: none;
+
+    box-shadow: 3px 3px 0 var(--green-deep);
+}
+
+
+/* NOT READY */
+
+.status-not-ready {
+    background: #020302;
+
+    color: var(--green);
+
+    border-style: dashed;
+}
+
+
+/* =========================================================
+   USER LIST
+   ========================================================= */
+
+#user-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin: 8px 0;
+    padding: 10px 0;
+
+    border-bottom: 1px solid rgb(79 174 58 / 25%);
+
+    text-transform: uppercase;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+#user-list li::before {
+    content: ">";
+    color: var(--green);
+    flex-shrink: 0;
+}
+
+#user-list li .player-name {
+    flex: 1;
+    min-width: 0;
+}
+
+#user-list li .player-status {
+    width: 104px;
+    min-width: 104px;
+
+    text-align: center;
+}
+
+#user-list li .kick-out-btn {
+    width: 70px;
+    min-width: 70px;
+    height: 28px;
+
+    margin: 0;
+    padding: 4px;
+
+    font-size: 10px;
+
+    flex-shrink: 0;
+}
+
+
+:root {
+    --bg: #050705;
+    --panel: #0a0d0a;
+    --retro-bg: #182019;
+
+    --green: #4fae3a;
+    --green-dark: #367f2a;
+    --green-deep: #1d4d1c;
+    --green-dim: #326f2b;
+    --green-faint: rgb(79 174 58 / 12%);
+
+    --border: 2px solid var(--green);
+
+    --font-pixel: "Press Start 2P", "Courier New", monospace;
+
+    /* Hard pixel shadows — NO blur */
+    --shadow-pixel: 4px 4px 0 var(--green-deep);
+}
+
+
+/* =========================================================
+   BASE
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    position: relative;
+    overflow-x: hidden;
+
+    margin: 0;
+    padding: 32px;
+
+    background-color: var(--bg);
+
+    background-image:
+        repeating-linear-gradient(
+            -35deg,
+            transparent 0 18px,
+            rgb(79 174 58 / 3%) 19px 20px
+        ),
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0 7px,
+            rgb(79 174 58 / 2%) 8px
+        );
+
+    color: var(--green);
+
+    font-family: var(--font-pixel);
+
+    text-shadow: none;
+
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* =========================================================
+   CRT SCANLINES
+   ========================================================= */
+
+body::after {
+    content: "";
+
+    position: fixed;
+    inset: 0;
+
+    z-index: 9999;
+    pointer-events: none;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0,
+            transparent 3px,
+            rgb(0 0 0 / 12%) 4px
+        );
+
+    opacity: 0.3;
+}
+
+
+/* =========================================================
+   BOX / PANEL
+   ========================================================= */
+
+.box {
+    position: relative;
+    z-index: 10;
+
+    max-width: 560px;
+    margin-bottom: 24px;
+    padding: 24px;
+
+    background: var(--panel);
+
+    border: var(--border);
+    border-radius: 0;
+
+    box-shadow:
+        var(--shadow-pixel),
+        0 0 0 1px rgb(79 174 58 / 10%);
+
+    image-rendering: pixelated;
+}
+
+
+/* =========================================================
+   PANEL HEADER
+   ========================================================= */
+
+.box::before {
+    content: "> SYSTEM LOBBY";
+
+    display: block;
+
+    margin-bottom: 16px;
+
+    color: var(--green);
+
+    font-family: var(--font-pixel);
+
+    font-size: 11px;
+
+    line-height: 1.6;
+
+    text-transform: uppercase;
+
+    text-shadow: none;
+}
+
+
+/* =========================================================
+   PIXEL DECORATION
+   ========================================================= */
+
+.box::after {
+    content: "";
+
+    position: absolute;
+
+    top: 14px;
+    right: 14px;
+
+    width: 40px;
+    height: 40px;
+
+    background-image:
+        radial-gradient(
+            var(--green) 1.5px,
+            transparent 1.5px
+        );
+
+    background-size: 7px 7px;
+
+    opacity: 0.35;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   UTILITY
+   ========================================================= */
+
+.hidden {
+    display: none;
+}
+
+
+/* =========================================================
+   HEADINGS
+   ========================================================= */
+
+h2,
+h3 {
+    color: var(--green);
+
+    letter-spacing: 0;
+
+    line-height: 1.5;
+
+    text-transform: uppercase;
+
+    text-shadow: none;
+}
+
+h2::before,
+h3::before {
+    content: "> ";
+}
+
+
+/* =========================================================
+   INPUT + BUTTON BASE
+   ========================================================= */
+
+input,
+button {
+    width: 100%;
+
+    margin: 8px 0;
+    padding: 12px;
+
+    box-sizing: border-box;
+
+    font-family: var(--font-pixel);
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   INPUT
+   ========================================================= */
+
+input {
+    background: #020302;
+
+    color: var(--green);
+
+    border: var(--border);
+    border-radius: 0;
+
+    outline: none;
+
+    text-transform: uppercase;
+
+    box-shadow: inset 0 0 0 1px rgb(79 174 58 / 8%);
+}
+
+input::placeholder {
+    color: rgb(79 174 58 / 45%);
+}
+
+input:focus {
+    background: #070b07;
+
+    border-color: var(--green);
+
+    box-shadow:
+        inset 3px 0 0 var(--green),
+        4px 4px 0 var(--green-deep);
+}
+
+
+/* =========================================================
+   BUTTON
+   ========================================================= */
+
+button {
+    appearance: none;
+
+    background: #020302;
+
+    color: var(--green);
+
+    border: var(--border);
+    border-radius: 0;
+
+    cursor: pointer;
+
+    text-transform: uppercase;
+
+    text-shadow: none;
+
+    box-shadow: 4px 4px 0 var(--green-deep);
+
+    transition: none;
+}
+
+
+/* =========================================================
+   BUTTON HOVER
+   ========================================================= */
+
+button:hover {
+    background: var(--green);
+
+    color: #050705;
+
+    text-shadow: none;
+
+    box-shadow: 4px 4px 0 var(--green-deep);
+}
+
+
+/* =========================================================
+   BUTTON PRESS
+   ========================================================= */
+
+button:active {
+    transform: translate(4px, 4px);
+
+    box-shadow: 0 0 0 var(--green-deep);
+}
+
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+hr {
+    border: 0;
+
+    border-top: 2px solid var(--green);
+}
+
+
+/* =========================================================
+   LIST
+   ========================================================= */
+
+ul {
+    padding-left: 0;
+
+    list-style: none;
+}
+
+
+/* =========================================================
+   ROOM CODE
+   ========================================================= */
+
+#room-code-display {
+    color: var(--green);
+
+    text-shadow: none;
+
+    letter-spacing: 2px;
+}
+
+
+/* =========================================================
+   READY BUTTON
+   ========================================================= */
+
+#ready-btn.ready-false {
+    background: #020302;
+
+    color: var(--green);
+
+    border-style: dashed;
+
+    box-shadow: 4px 4px 0 var(--green-deep);
+}
+
+
+#ready-btn.ready-true {
+    background: var(--green);
+
+    color: #050705;
+
+    text-shadow: none;
+
+    box-shadow: 4px 4px 0 var(--green-deep);
+}
+
+
+/* =========================================================
+   USER STATUS
+   ========================================================= */
+
+.status-ready,
+.status-not-ready {
+    min-width: 104px;
+
+    padding: 5px 8px;
+
+    border: 2px solid var(--green);
+    border-radius: 0;
+
+    font-family: var(--font-pixel);
+
+    font-size: 8px;
+
+    font-weight: normal;
+
+    margin-left: 8px;
+
+    text-align: center;
+
+    text-transform: uppercase;
+}
+
+
+/* READY */
+
+.status-ready {
+    background: var(--green);
+
+    color: #050705;
+
+    text-shadow: none;
+
+    box-shadow: 3px 3px 0 var(--green-deep);
+}
+
+
+/* NOT READY */
+
+.status-not-ready {
+    background: #020302;
+
+    color: var(--green);
+
+    border-style: dashed;
+}
+
+
+/* =========================================================
+   USER LIST
+   ========================================================= */
+
+#user-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin: 8px 0;
+    padding: 10px 0;
+
+    border-bottom: 1px solid rgb(79 174 58 / 25%);
+
+    text-transform: uppercase;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+#user-list li::before {
+    content: ">";
+    color: var(--green);
+    flex-shrink: 0;
+}
+
+#user-list li .player-name {
+    flex: 1;
+    min-width: 0;
+}
+
+#user-list li .player-status {
+    width: 104px;
+    min-width: 104px;
+
+    text-align: center;
+}
+
+#user-list li .kick-out-btn {
+    width: 70px;
+    min-width: 70px;
+    height: 28px;
+
+    margin: 0;
+    padding: 4px;
+
+    font-size: 10px;
+
+    flex-shrink: 0;
+}
+/**sdfghjkl/
+

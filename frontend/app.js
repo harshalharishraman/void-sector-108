@@ -3685,10 +3685,80 @@
       readyBtn.addEventListener("click", () => {
         socket.emit("change-ready-status");
       });
+      readyBtn.addEventListener("keydown", (event) => {
+        if (event.code === "Space") {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      });
+      var input = {
+        left: false,
+        right: false,
+        up: false,
+        down: false,
+        shoot: false
+      };
+      window.addEventListener("keydown", (event) => {
+        if (event.key === "a" || event.key === "ArrowLeft") {
+          input.left = true;
+        }
+        if (event.key === "d" || event.key === "ArrowRight") {
+          input.right = true;
+        }
+        if (event.key === "w" || event.key === "ArrowUp") {
+          input.up = true;
+        }
+        if (event.key === "s" || event.key === "ArrowDown") {
+          input.down = true;
+        }
+        if (event.key === " ") {
+          input.shoot = true;
+        }
+      });
+      window.addEventListener("keyup", (event) => {
+        if (event.key === "a" || event.key === "ArrowLeft") {
+          input.left = false;
+        }
+        if (event.key === "d" || event.key === "ArrowRight") {
+          input.right = false;
+        }
+        if (event.key === "w" || event.key === "ArrowUp") {
+          input.up = false;
+        }
+        if (event.key === "s" || event.key === "ArrowDown") {
+          input.down = false;
+        }
+        if (event.key === " ") {
+          input.shoot = false;
+        }
+      });
+      var PlayerInterval = null;
+      var seqn = 0;
+      function startInterval() {
+        if (PlayerInterval) return;
+        PlayerInterval = setInterval(
+          () => {
+            if (!socket.connected) return;
+            const packet = {
+              seq: seqn++,
+              input
+            };
+            socket.emit("player-input", packet);
+          },
+          1e3 / 30
+        );
+      }
+      function stopInterval() {
+        if (!PlayerInterval) return;
+        clearInterval(PlayerInterval);
+        PlayerInterval = null;
+      }
       socket.on("room-created", (resp) => {
+        startInterval();
         showRoom(resp.data.room_code);
       });
       socket.on("room-joined", (resp) => {
+        startInterval();
         showRoom(resp.data.room_code);
       });
       socket.on("room-users", (resp) => {
@@ -3723,6 +3793,7 @@
         });
       });
       socket.on("left-room", (resp) => {
+        stopInterval();
         roomScreen.classList.add("hidden");
         lobbyScreen.classList.remove("hidden");
         roomCodeDisplay.textContent = "";
