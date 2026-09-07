@@ -8,6 +8,20 @@ export interface CustomSocket extends Socket{
   loadout?:{[key:string]:number};
 }
 
-export interface RoomSet{
-  
-}
+export interface PlayerInput{
+    left:boolean,
+    right:boolean,
+    up:boolean,
+    down:boolean,
+    shoot:boolean
+};
+
+export interface InputPacket{
+  seq:number,
+  input:PlayerInput
+};
+
+export interface PlayerState{
+    username:string,
+    input:PlayerInput
+    };

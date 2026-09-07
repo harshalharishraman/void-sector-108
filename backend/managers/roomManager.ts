@@ -33,8 +33,12 @@ class room_actions{
     static async updateRoomUsers(io:Server,roomCode:string) {
 
     try {
+        const room=this.room_sets.get(roomCode);
+  if(!room){
+    return new resp(false,'invalid room code',null);
+  }
     const clients = io.sockets.adapter.rooms.get(roomCode);
-     const users:string[]= [];
+     const users:{username:string,ready:boolean}[]= [];
 
   if (clients) {
     for (const clientId of clients) {
@@ -42,12 +46,22 @@ class room_actions{
                           CustomSocket| undefined;
 
       if (clientSocket && clientSocket.username) {
-        users.push(clientSocket.username);
+        users.push({username:clientSocket.username,
+            ready:clientSocket.ready??false});
       }
     }
   }
+  const host=await io.sockets.sockets.get(room.host) as 
+            CustomSocket|undefined;
+if(!host){
+    return new resp(false,'host detail unobtainable',null);
+}
+  
   io.to(roomCode).emit("room-users",
-    new resp(true,'updated room userslist',{'users':users}));
+    new resp(true,
+        'updated room userslist',
+        {'users':users,host_id:host.id,host_uname:host.username
+        }));
    
 }
     catch (error:any) {
@@ -168,7 +182,7 @@ static async change_player_status(
                     room.ready_players =
                     Math.max(0, room.ready_players - 1);}
 
-                console.log(socket.ready)
+                console.log(socket.ready);
                 
                 return new resp(true,
                     `user:${socket.username} status changed`,
@@ -180,6 +194,86 @@ static async change_player_status(
          throw error;   
         }
     }
+
+    static async getSocketById(
+        io:Server,uname:string){
+                for(const maybe_socket of io.sockets.sockets.values()){
+                    const if_socket=maybe_socket as CustomSocket;
+                    if(if_socket.username===uname){
+                        return new resp(true,
+                            `found socket of user:${uname}`,
+                        if_socket);
+                    }
+                }
+                return  new resp(false,
+                            `not found socket of user:${uname}`,
+                        null);;
+        }
+
+    static async to_kick_player(
+        io:Server,socket:CustomSocket,to_kick_out:string){
+            try {
+                const room=this.room_sets.get(socket.currentRoom);
+                if(!(socket.host!=room.host)){
+                    return new resp(false,
+                        `user:${socket.username} not host of room:${socket.currentRoom}
+                        ,permission denied`,
+                        null);
+                }
+
+                if(!room.pnames.includes(to_kick_out)){
+                    return new resp(false,
+                        `user:${to_kick_out} to be kicked out not in room`,
+                        null);
+                }
+
+                if(to_kick_out===socket.username){
+                    return new resp(false,
+                        `cant kick out host itself`,
+                        null);
+                }
+
+                const to_kick_out_socket=await this.getSocketById
+                                               (io,to_kick_out);
+
+                
+
+                if(!to_kick_out_socket.success){
+                    return new resp(false,`cant get user:${to_kick_out} socket`,
+                        null
+                    );}
+
+                const from_rm=await this.pyr_leave(io,
+                    to_kick_out_socket.data,
+                    to_kick_out_socket.data.currentRoom);
+
+
+                if(!from_rm.success){
+                    return new resp(false,
+                        `cant remove user:${to_kick_out}`,
+                        from_rm.data
+                    );}
+
+                await this.updateRoomUsers(io,socket.currentRoom??'error');
+
+                to_kick_out_socket.data.emit('left-room',from_rm);
+
+
+
+                return new resp(true,
+                    `kicked out user:${to_kick_out}
+                    from room:${to_kick_out_socket.data.currentRoom}
+                    by host:${socket.username}`,
+                    {kicked_out_uname:to_kick_out,
+                     kicked_out_id:to_kick_out_socket.id,
+                     by_id:socket.id}
+                );
+
+            }
+            catch (error:unknown){
+                throw error;
+            }
+        }
 }
 
 module.exports=room_actions

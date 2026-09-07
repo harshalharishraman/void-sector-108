@@ -5,7 +5,7 @@ const rooms=require('./rooms')
 const rm=require('../managers/roomManager')
 const pm=require('../managers/playerManager');
 import {Server,Socket} from 'socket.io'
-import type {CustomSocket} from '../interfaces'
+import type {CustomSocket, InputPacket, PlayerInput} from '../interfaces'
 
 class s_index{
 
@@ -56,7 +56,8 @@ class s_index{
     }
     
     catch(error:any){
-    socket.emit("error-message",new resp(false,"backed error",{"error":error}));
+    socket.emit("error-message",
+      new resp(false,"backed error",{"error":error}));
     console.error(error);
 }});
 
@@ -84,6 +85,33 @@ socket.on('leave-room',async ()=>{
   }
 });
 
+
+socket.on('player-input',async (input:InputPacket)=>{
+  try {
+    if (!socket.currentRoom){
+      return socket.emit("error-message",
+      'player is not in a room');
+                }
+
+    if (!socket.username){
+      return socket.emit("error-message",
+        'username not set',);
+                }
+    
+    pm.updateplayerInput(io,socket,input);
+  }
+  
+  catch(error:any) {
+    
+    socket.emit("error-message",
+      new resp(false,
+        "backed error",
+        {"error":error}));
+
+    console.error(error);
+  }
+});
+
 socket.on('change-ready-status', async ()=>{
 
   try {
@@ -103,12 +131,12 @@ socket.on('change-ready-status', async ()=>{
         return socket.emit('error-message', from_rm)
       }
 
-    socket.emit('changed-ready-status',from_rm)
+    io.to(socket.currentRoom).emit('changed-ready-status',from_rm)
       
     
   }
 
-  catch (error:any) {
+  catch (error:unknown) {
 
     socket.emit("error-message",
       new resp(false,
@@ -117,7 +145,38 @@ socket.on('change-ready-status', async ()=>{
 
     console.error(error);
   }
-})
+});
+
+socket.on('kick-out-player',async(kick_out_uname:string)=>{
+  try {
+    if (!socket.currentRoom){
+      return socket.emit("error-message",
+      'player is not in a room');
+                }
+
+    if (!socket.username){
+      return socket.emit("error-message",
+        'username not set',);
+                }
+    
+    const from_rm=await rm.to_kick_player(io,socket,kick_out_uname);
+
+    if(!from_rm.success){
+        return socket.emit('error-message', from_rm)
+      }
+
+    io.to(socket.currentRoom).emit('kicked-out-player',from_rm)
+  }
+  
+  catch(error:unknown) {
+    socket.emit("error-message",
+      new resp(false,
+        "backed error",
+        {"error":error}));
+
+    console.error(error);
+  }
+});
 
     // Disconnect
     socket.on("disconnect", async () => {
@@ -135,6 +194,11 @@ socket.on('change-ready-status', async ()=>{
 
     console.log(`Socket disconnected: ${socket.id}`);
   } catch (error: unknown) {
+     socket.emit("error-message",
+      new resp(false,
+        "backed error",
+        {"error":error}));
+
     console.error(error);
   }
 });
